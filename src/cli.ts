@@ -31,8 +31,11 @@ const FILETYPE_MAP: Record<string, { syntax: string; type: SyntaxType }> = {
   less: { syntax: "css", type: "stylesheet" },
 };
 
-const { params } = yargs(hideBin(process.argv))
-  .options({ params: { type: "string", demand: true } })
+const { params, prefix } = yargs(hideBin(process.argv))
+  .options({
+    params: { type: "string", demand: true },
+    prefix: { type: "string" },
+  })
   .parseSync();
 
 const {
@@ -45,7 +48,7 @@ const {
 
 function parse() {
   const { syntax, type } = FILETYPE_MAP[filetype];
-  const extracted = extract(cursorLine, character, { type });
+  const extracted = extract(cursorLine, character, { type, prefix });
 
   if (!extracted) {
     return;
@@ -66,28 +69,26 @@ function parse() {
     ...Object.keys(emmetConfig.snippets),
   ]);
 
-  Array.from(snippets)
-    .filter((snippet) => snippet.startsWith(abbreviation))
-    .forEach((snippet) => {
-      const expanded = expandAbbreviation(snippet, emmetConfig);
+  Array.from(snippets).forEach((snippet) => {
+    const expanded = expandAbbreviation(snippet, emmetConfig);
 
-      console.log(
-        JSON.stringify({
-          label: snippet,
-          insertTextFormat: SNIPPET_FORMAT,
-          detail: snippet,
-          documentation: { kind: "markdown", value: expanded },
-          textEdit: {
-            range: {
-              start: { line, character: start },
-              end: { line, character: end },
-            },
-            newText: expanded,
+    console.log(
+      JSON.stringify({
+        label: `~${snippet}`,
+        insertTextFormat: SNIPPET_FORMAT,
+        detail: snippet,
+        documentation: { kind: "markdown", value: expanded },
+        textEdit: {
+          range: {
+            start: { line, character: start - 1 },
+            end: { line, character: end },
           },
-          kind: SNIPPET_KIND,
-        })
-      );
-    });
+          newText: expanded,
+        },
+        kind: SNIPPET_KIND,
+      })
+    );
+  });
 }
 
 parse();
