@@ -80,7 +80,7 @@ function parse() {
         documentation: { kind: "markdown", value: expanded },
         textEdit: {
           range: {
-            start: { line, character: start - 1 },
+            start: { line, character: start },
             end: { line, character: end },
           },
           newText: expanded,

@@ -24,7 +24,13 @@ end
 function source:complete(params, callback)
   local results = {}
 
-  vim.fn.jobstart({ 'cmp-emmet', '--params', vim.fn.json_encode(params), '--prefix', prefix }, {
+  vim.fn.jobstart({
+    'cmp-emmet',
+    '--params',
+    vim.fn.json_encode(params),
+    '--prefix',
+    prefix,
+  }, {
     on_stdout = function(_, data)
       local output = data[1]
       if output ~= '' then
