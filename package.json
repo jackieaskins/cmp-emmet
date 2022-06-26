@@ -19,20 +19,21 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.1",
-    "@types/node": "^17.0.35",
+    "@tsconfig/node14": "^1.0.3",
+    "@types/node": "^17.0.45",
     "@types/yargs": "^17.0.10",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
-    "eslint": "^8.16.0",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "husky": "^8.0.1",
-    "lint-staged": "^12.4.1",
-    "prettier": "^2.6.2"
+    "lint-staged": "^12.5.0",
+    "prettier": "^2.7.1"
   },
   "dependencies": {
-    "emmet": "^2.3.6",
+    "vscode-emmet-helper": "^2.6.4",
+    "vscode-languageserver-textdocument": "^1.0.5",
     "yargs": "^17.5.1"
   },
   "lint-staged": {
