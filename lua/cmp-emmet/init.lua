@@ -27,7 +27,7 @@ function source:get_keyword_pattern()
 end
 
 function source:complete(params, callback)
-  local results = {}
+  local content = ''
 
   local context = params.context
   local bufnr = context.bufnr
@@ -48,13 +48,20 @@ function source:complete(params, callback)
     vim.uri_from_bufnr(bufnr),
   }, {
     on_stdout = function(_, data)
-      local output = data[1]
+      local output = vim.trim(data[1])
       if output ~= '' then
-        results = vim.fn.json_decode(output)
+        content = content .. output
       end
     end,
     on_exit = function()
-      source.incomplete = results.isIncomplete or false
+      local trimmed_content = vim.trim(content)
+
+      if trimmed_content == '' then
+        return callback(nil)
+      end
+
+      local results = vim.fn.json_decode(trimmed_content)
+      source.incomplete = results and results.isIncomplete or false
       callback(results and results.items or nil)
     end,
   })
