@@ -1,13 +1,35 @@
-local filetype_syntax_map = {
-  html = 'html',
-  xml = 'xml',
-  typescriptreact = 'jsx',
-  javascriptreact = 'jsx',
-  css = 'css',
-  sass = 'css',
-  scss = 'css',
-  less = 'css',
+local supported_filetypes = {
+  'css',
+  'html',
+  'javascript',
+  'javascriptreact',
+  'less',
+  'markdown', -- Detect codeblocks in markdown files
+  'pug',
+  'sass',
+  'scss',
+  'typescriptreact',
+  'xml',
 }
+
+-- Based on Treesitter integration in https://github.com/dcampos/cmp-emmet-vim/blob/master/lua/cmp_emmet_vim/init.lua#L37
+local function get_language_at_cursor()
+  local success, parser = pcall(vim.treesitter.get_parser)
+
+  if not success then
+    return vim.bo.filetype
+  end
+
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  return parser
+    :language_for_range({
+      cursor[1] - 1,
+      cursor[2],
+      cursor[1] - 1,
+      cursor[2],
+    })
+    :lang()
+end
 
 local source = {}
 
@@ -16,10 +38,7 @@ function source.new()
 end
 
 function source:is_available()
-  return vim.tbl_contains(
-    { 'html', 'xml', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less' },
-    vim.bo.filetype
-  )
+  return vim.tbl_contains(supported_filetypes, vim.bo.filetype)
 end
 
 function source:get_keyword_pattern()
@@ -32,18 +51,15 @@ function source:complete(params, callback)
   local context = params.context
   local bufnr = context.bufnr
   local cursor = context.cursor
-  local filetype = context.filetype
 
   vim.fn.jobstart({
     'cmp-emmet',
     '--content',
     table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), '\n'),
     '--languageId',
-    filetype,
+    get_language_at_cursor(),
     '--position',
     vim.fn.json_encode({ line = cursor.line, character = cursor.character }),
-    '--syntax',
-    filetype_syntax_map[filetype],
     '--uri',
     vim.uri_from_bufnr(bufnr),
   }, {
