@@ -21,7 +21,7 @@ local function get_language_at_cursor()
   end
 
   local cursor = vim.api.nvim_win_get_cursor(0)
-  return parser
+  local language = parser
     :language_for_range({
       cursor[1] - 1,
       cursor[2],
@@ -29,6 +29,12 @@ local function get_language_at_cursor()
       cursor[2],
     })
     :lang()
+
+  if vim.tbl_contains({ 'javascript', 'tsx' }, language) then
+    return 'jsx'
+  end
+
+  return language
 end
 
 local source = {}
