@@ -1,29 +1,22 @@
 {
   "name": "cmp-emmet",
+  "type": "module",
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "main": "./bin/cli.js",
-  "bin": {
-    "cmp-emmet": "./bin/cli.js"
-  },
+  "main": "./bin/cmp-emmet.js",
+  "bin": "./bin/cmp-emmet.js",
   "scripts": {
-    "lint": "eslint --ext ts src",
+    "lint": "eslint --ext js bin",
     "lint:fix": "npm run lint -- --fix",
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "release": "npm ci && npm run build && chmod +x ./bin/cli.js && npm link",
+    "release": "npm ci && npm link",
     "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.0",
-    "@types/node": "^17.0.45",
     "@types/yargs": "^17.0.24",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
@@ -38,7 +31,7 @@
   },
   "lint-staged": {
     "*.lua": "stylua",
-    "*.ts": "eslint --fix",
-    "*.{json,js,ts,css,md}": "prettier --write"
+    "*.js": "eslint --fix",
+    "*.{json,js,css,md}": "prettier --write"
   }
 }
